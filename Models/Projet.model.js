@@ -5,6 +5,11 @@ const ProjetModel = new Schema(
   {
     nom: { type: String, required: true },
     description: { type: String, required: true },
+    chefProjet: {
+      type: mongoose.Types.ObjectId,
+      required: false,
+      ref: "Informaticien",
+    },
   },
   { timestamps: true }
 );

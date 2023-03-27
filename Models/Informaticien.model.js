@@ -5,9 +5,9 @@ const InformaticienModel = new Schema(
   {
     nom: { type: String, required: true },
     prenom: { type: String, required: true },
-    mail: { type: String, required: false, unique: true },
-    mdp: { type: String, required: true },
-    tel: { type: String, required: true, unique: true },
+    mail: { type: String, required: false },
+    mdp: { type: String, required: false },
+    tel: { type: Number, required: true },
     spec: { type: String, required: true },
 
     role: {

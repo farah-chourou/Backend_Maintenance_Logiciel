@@ -4,7 +4,7 @@ var cors = require("cors");
 const bodyParser = require("body-parser");
 require("dotenv").config();
 const connectDB = require("./database/connectionDB");
-const AllRoutes = require("./routes/AllRoutes.routes");
+const AllRoutes = require("./Routes/AllRoutes.routes");
 
 const corstAllowAll = {
   credentials: true,
