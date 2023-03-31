@@ -32,10 +32,19 @@ router.get(
   verifToken.isDevelopper,
   TacheController.GetAllProjects
 );
-router.put("/updateEtat/:_id", TacheController.UpdateEtat);
-router.put("/addDocument/:_id", multer.uploadDoc, TacheController.AddDocument);
+router.put(
+  "/updateEtat/:_id",
+  verifToken.isDevelopper,
+  TacheController.UpdateEtat
+);
+router.put(
+  "/addDocument/:_id",
+  verifToken.isDevelopper,
+  multer.uploadDoc,
+  TacheController.AddDocument
+);
 
 // for both
-router.get("/get_one/:_id", TacheController.GetOne);
+router.get("/get_one/:_id", verifToken.isUser, TacheController.GetOne);
 
 module.exports = router;
