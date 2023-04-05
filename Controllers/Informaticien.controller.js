@@ -33,7 +33,7 @@ const CreateDeveloper = async (req, res) => {
       <p>your M-D-P is : <b>${password}</b> </p>
       <p>please make sure to change your password after you access to your account</p>
       </div>`;
-    await Mailer.Mail_Sender(mail, content, subject);
+    // await Mailer.Mail_Sender(mail, content, subject);
 
     return res.status(200).json({
       Message: "user created suucessfully",
@@ -63,7 +63,7 @@ const DeleteDeveloper = async (req, res) => {
 
 const GetAllDeveloper = async (req, res) => {
   try {
-    const Developpers = await InformaticienModel.find();
+    const Developpers = await InformaticienModel.find({ role: "DEVELOPPEUR" });
     return res
       .status(200)
       .json({ Message: "Developers found successfully ", data: Developpers });

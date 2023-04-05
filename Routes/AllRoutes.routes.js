@@ -1,7 +1,7 @@
 const express = require("express");
-const informaticienRoutes = require("../routes/Informaticien.routes");
-const TacheRoutes = require("../routes/Tache.routes");
-const ProjetRoutes = require("../routes/Projet.routes");
+const informaticienRoutes = require("./Informaticien.routes");
+const TacheRoutes = require("./Tache.routes");
+const ProjetRoutes = require("./Projet.routes");
 const router = express.Router();
 
 router.use("/user", informaticienRoutes);

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const InformaticienController = require("../controllers/Informaticien.controller");
-const AuthentificationController = require("../controllers/Authentification.controller");
+const InformaticienController = require("../Controllers/Informaticien.controller");
+const AuthentificationController = require("../Controllers/Authentification.controller");
 const verifToken = require("../middlewares/VerifToken");
 
 // crud devloppeurs --> premet au chef de projet d' ajouter supp modifier les devloppeurs
