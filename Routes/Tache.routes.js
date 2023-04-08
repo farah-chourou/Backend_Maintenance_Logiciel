@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const TacheController = require("../controllers/Tache.controller");
-const multer = require("../utils/Multer");
+const TacheController = require("../Controllers/Tache.controller");
+const multer = require("../Utils/Multer");
 const verifToken = require("../middlewares/VerifToken");
 
 router.post(
@@ -9,9 +9,10 @@ router.post(
   verifToken.isChef,
   TacheController.CreateTache
 );
-router.get("/get_all", verifToken.isChef, TacheController.GetAllTache);
+router.get("/get_all", verifToken.isUser, TacheController.GetAllTache);
 router.get(
   "/get_all_of_project/:idProject",
+  verifToken.isChef,
   TacheController.GetAllTacheOfProject
 );
 

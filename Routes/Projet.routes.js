@@ -4,7 +4,7 @@ const ProjectController = require("../Controllers/Projet.controller");
 const verifToken = require("../middlewares/VerifToken");
 
 router.post("/create", verifToken.isChef, ProjectController.CreateProject);
-router.get("/get_all", verifToken.isChef, ProjectController.GetAllProject);
+router.get("/get_all", verifToken.isUser, ProjectController.GetAllProject);
 router.get(
   "/get_all_finish",
   verifToken.isUser,
