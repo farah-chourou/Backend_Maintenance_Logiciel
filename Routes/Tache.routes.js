@@ -5,21 +5,28 @@ const multer = require("../utils/Multer");
 const verifToken = require("../middlewares/VerifToken");
 
 router.post(
-  "/create/:idProject/:idDeveloper",
+  "/create/:idProject",
   verifToken.isChef,
   TacheController.CreateTache
 );
+router.get("/get_all", verifToken.isChef, TacheController.GetAllTache);
 router.get(
   "/get_all_of_project/:idProject",
   TacheController.GetAllTacheOfProject
 );
+
 router.get(
-  "/get_all_of_developer/:idDeveloper",
+  "/get_all_of_developer",
+  verifToken.isDevelopper,
   TacheController.GetAllTacheOfDeveloper
 );
 
 router.delete("/delete_one/:_id", TacheController.DeleteTache);
-router.put("/update_info/:_id", TacheController.UpdateInfo);
+router.put(
+  "/update_info/:_id/:idProjet",
+  verifToken.isChef,
+  TacheController.UpdateInfo
+);
 
 // for developper
 router.get(
@@ -39,12 +46,23 @@ router.put(
 );
 router.put(
   "/addDocument/:_id",
-  verifToken.isDevelopper,
   multer.uploadDoc,
+  verifToken.isDevelopper,
+
   TacheController.AddDocument
 );
 
 // for both
 router.get("/get_one/:_id", verifToken.isUser, TacheController.GetOne);
+router.get(
+  "/get_all_tasks_en_cours",
+  verifToken.isUser,
+  TacheController.GetAllTasksEnCours
+);
 
+router.get(
+  "/get_all_tasks_realiser",
+  verifToken.isUser,
+  TacheController.GetAllTasksRealiser
+);
 module.exports = router;

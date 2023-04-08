@@ -4,13 +4,17 @@ const Schema = mongoose.Schema;
 const TacheModel = new Schema(
   {
     nom: { type: String, required: true },
-    type: { type: String, required: true },
+    type: {
+      type: String,
+      required: true,
+      enum: ["Script SQL", "Mise à jour", "Suppression", "Preparation"],
+    },
     dateAffectation: { type: Date, required: true },
-    dateCloture: { type: Date, required: true },
+    dateCloture: { type: Date, required: false },
     etat: {
       type: String,
-      default: "En Cours",
-      enum: ["En Cours", "Términer", "Bloquer"],
+      default: "Affecter",
+      enum: ["En Cours", "Réaliser", "Affecter", "A faire"],
     },
 
     idProjet: {

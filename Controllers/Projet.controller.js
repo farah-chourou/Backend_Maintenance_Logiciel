@@ -68,6 +68,19 @@ const GetAllProject = async (req, res) => {
     res.status(500).send({ Message: "Server Error", Error: error.message });
   }
 };
+const GetAllProjectFinish = async (req, res) => {
+  try {
+    const Developpers = await ProjectModel.find({ etat: "Terminer" }).populate([
+      "chefProjet",
+    ]);
+    return res
+      .status(200)
+      .json({ Message: "Projects found successfully ", data: Developpers });
+  } catch (error) {
+    console.log("##########:", error);
+    res.status(500).send({ Message: "Server Error", Error: error.message });
+  }
+};
 
 const GetOne = async (req, res) => {
   try {
@@ -116,4 +129,5 @@ module.exports = {
   GetAllProject,
   GetOne,
   UpdateInfo,
+  GetAllProjectFinish,
 };

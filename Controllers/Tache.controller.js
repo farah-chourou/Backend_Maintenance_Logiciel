@@ -7,11 +7,9 @@ const mongoose = require("mongoose");
 
 const CreateTache = async (req, res) => {
   try {
-    const { idProject, idDeveloper } = req.params;
-    console.log(idProject);
-    console.log(idDeveloper);
+    const { idProject } = req.params;
 
-    const { nom, type, dateAffectation, dateCloture } = req.body;
+    const { nom, type, dateAffectation, dateCloture, idDeveloper } = req.body;
     const existTache = await TacheModel.findOne({ nom });
     console.log(existTache);
     if (existTache)
@@ -20,6 +18,7 @@ const CreateTache = async (req, res) => {
         Success: false,
       });
     const projectId = await ProjectModel.findOne({ _id: idProject });
+
     const developerId = await InformaticienModel.findOne({ _id: idDeveloper });
 
     if (!projectId || !developerId) {
@@ -64,6 +63,22 @@ const DeleteTache = async (req, res) => {
     res.status(500).send({ Message: "Server Error", Error: error.message });
   }
 };
+const GetAllTache = async (req, res) => {
+  try {
+    const Taches = await TacheModel.find().populate([
+      "idProjet",
+      "idDeveloper",
+      "documentation",
+    ]);
+
+    return res
+      .status(200)
+      .json({ Message: "tasks found successfully ", data: Taches });
+  } catch (error) {
+    console.log("##########:", error);
+    res.status(500).send({ Message: "Server Error", Error: error.message });
+  }
+};
 
 const GetAllTacheOfProject = async (req, res) => {
   try {
@@ -72,6 +87,7 @@ const GetAllTacheOfProject = async (req, res) => {
     const Taches = await TacheModel.find({ idProjet: idProject }).populate([
       "idProjet",
       "idDeveloper",
+      "documentation",
     ]);
 
     return res
@@ -85,11 +101,12 @@ const GetAllTacheOfProject = async (req, res) => {
 
 const GetAllTacheOfDeveloper = async (req, res) => {
   try {
-    const { idDeveloper } = req.params;
+    const { _id } = req.user;
 
-    const Taches = await TacheModel.find({ idDeveloper }).populate([
+    const Taches = await TacheModel.find({ idDeveloper: _id }).populate([
       "idProjet",
       "idDeveloper",
+      "documentation",
     ]);
     if (Taches.length === 0) {
       return res.status(200).json({ Message: "No tasks found  " });
@@ -110,6 +127,7 @@ const GetAllTasks = async (req, res) => {
     const Taches = await TacheModel.find({ idDeveloper: _id }).populate([
       "idProjet",
       "idDeveloper",
+      "documentation",
     ]);
     if (Taches.length === 0) {
       return res.status(200).json({ Message: "No tasks found  " });
@@ -122,13 +140,51 @@ const GetAllTasks = async (req, res) => {
     res.status(500).send({ Message: "Server Error", Error: error.message });
   }
 };
+const GetAllTasksEnCours = async (req, res) => {
+  try {
+    const Taches = await TacheModel.find({ etat: "En Cours" }).populate([
+      "idProjet",
+      "idDeveloper",
+      "documentation",
+    ]);
+    if (Taches.length === 0) {
+      return res.status(200).json({ Message: "No tasks found  " });
+    }
+    return res
+      .status(200)
+      .json({ Message: "Taches found successfully ", data: Taches });
+  } catch (error) {
+    console.log("##########:", error);
+    res.status(500).send({ Message: "Server Error", Error: error.message });
+  }
+};
+const GetAllTasksRealiser = async (req, res) => {
+  try {
+    const Taches = await TacheModel.find({ etat: "Réaliser" }).populate([
+      "idProjet",
+      "idDeveloper",
+      "documentation",
+    ]);
+    if (Taches.length === 0) {
+      return res.status(200).json({ Message: "No tasks found  " });
+    }
+    return res
+      .status(200)
+      .json({ Message: "Taches found successfully ", data: Taches });
+  } catch (error) {
+    console.log("##########:", error);
+    res.status(500).send({ Message: "Server Error", Error: error.message });
+  }
+};
+
 const GetAllProjects = async (req, res) => {
   try {
     const { _id } = req.user;
 
-    const tasks = await TacheModel.find({ idDeveloper: _id }).populate(
-      "idProjet"
-    );
+    const tasks = await TacheModel.find({ idDeveloper: _id }).populate([
+      "idProjet",
+      "documentation",
+    ]);
 
     const projectIds = [...new Set(tasks.map((task) => task.idProjet))];
     const projectObjectIds = projectIds.map(
@@ -166,8 +222,9 @@ const GetOne = async (req, res) => {
 const UpdateInfo = async (req, res) => {
   try {
     const { _id } = req.params;
-    const { idProjet, idDeveloper } = req.params;
-    const { nom, type, dateAffectation, dateCloture } = req.body;
+    const { idProjet } = req.params;
+    const { nom, type, dateAffectation, dateCloture, idDeveloper } = req.body;
+    console.log(idProjet);
 
     const projectId = await ProjectModel.findOne({ _id: idProjet });
     const developerId = await InformaticienModel.findOne({ _id: idDeveloper });
@@ -211,9 +268,9 @@ const UpdateInfo = async (req, res) => {
 const UpdateEtat = async (req, res) => {
   try {
     const { _id } = req.params;
-    const { etat } = req.body;
+    const { etat, dateCloture } = req.body;
 
-    if (!_id || !etat) {
+    if (!_id) {
       return res.status(409).json({
         Message: "Tache not exist",
         Success: false,
@@ -225,6 +282,7 @@ const UpdateEtat = async (req, res) => {
       {
         $set: {
           etat,
+          dateCloture,
         },
       },
       { new: true }
@@ -246,6 +304,8 @@ const UpdateEtat = async (req, res) => {
 
 const AddDocument = async (req, res) => {
   try {
+    console.log("******");
+
     const { _id } = req.params;
 
     if (!_id) {
@@ -254,12 +314,12 @@ const AddDocument = async (req, res) => {
         Success: false,
       });
     }
-    console.log(req.file.originalname);
-    console.log(req.file.buffer);
+    console.log(req.files.Documentation[0].path);
     const newDoc = new DocumentationModel({
-      nom: req.file.originalname,
-      contenu: req.file.path,
+      nom: req.files.Documentation[0].originalname,
+      contenu: req.files.Documentation[0].path,
     });
+    console.log("aded");
     const createdDoc = await newDoc.save();
     const updatedTache = await TacheModel.findOneAndUpdate(
       { _id },
@@ -295,4 +355,7 @@ module.exports = {
   AddDocument,
   GetAllTasks,
   GetAllProjects,
+  GetAllTache,
+  GetAllTasksEnCours,
+  GetAllTasksRealiser,
 };

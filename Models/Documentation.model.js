@@ -3,8 +3,8 @@ const Schema = mongoose.Schema;
 
 const DocumentationModel = new Schema(
   {
-    nom: { type: String, required: true },
-    contenu: { type: Buffer, required: true },
+    nom: { type: String, required: false },
+    contenu: { type: String, required: true },
   },
   { timestamps: true }
 );
